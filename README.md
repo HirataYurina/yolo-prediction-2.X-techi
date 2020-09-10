@@ -72,3 +72,25 @@ If you use **tensorflow serving** to do model persistence and deploy your projec
 If you use **tensorflow lite ** to do mobile projects, saved_model format is a best choice.
 
 <img src="images/tf_ecology.jpg" aligh="center">
+
+**5. Some Bugs**
+
+**There are some bugs when use tf.squeeze and tf.reshape together in GPU environment. **
+
+**But codes operated properly in CPU environment.**
+
+**I didn't know the reason.**
+
+```shell
+# bugs about reshape_op
+2020-09-09 23:39:54.446156: W tensorflow/core/framework/op_kernel.cc:1767] OP_REQUIRES failed at reshape_op.h:57 : Invalid argument: Size 1 must be non-negative, not -11
+tensorflow.python.framework.errors_impl.InvalidArgumentError: 2 root error(s) found.
+  (0) Invalid argument:  Size 1 must be non-negative, not -11
+	 [[{{node StatefulPartitionedCall/functional_3/tf_op_layer_RealDiv_14/RealDiv_14-1-ReshapeNHWCToNCHW-LayoutOptimizer}}]]
+	 [[StatefulPartitionedCall/functional_3/tf_op_layer_GatherV2_13/GatherV2_13/_26]]
+  (1) Invalid argument:  Size 1 must be non-negative, not -11
+	 [[{{node StatefulPartitionedCall/functional_3/tf_op_layer_RealDiv_14/RealDiv_14-1-ReshapeNHWCToNCHW-LayoutOptimizer}}]]
+0 successful operations.
+0 derived errors ignored. [Op:__inference_signature_wrapper_36980]
+```
+
