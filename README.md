@@ -4,6 +4,10 @@
 
 *deploy your model with saved-model format*
 
+*Now, only support 416 resolution prediction because i hard code some constants in save_model.py.*
+
+*I will decouple my codes in the future.*
+
 ___
 
 **1. Save Model**
