@@ -14,9 +14,9 @@ from argparse import ArgumentParser
 
 def augument_parser():
     parser = ArgumentParser(description='visualize your results to validate your saved_model')
-    parser.add_argument('--classes_path', type=str, default='./data/danger_source_classes.txt')
-    parser.add_argument('--model_path', type=str, default='./saved_model')
-    parser.add_argument('--img_path', type=str, default='./images/danger_source3.jpg')
+    parser.add_argument('--classes_path', type=str, default='./data/helmet.txt')
+    parser.add_argument('--model_path', type=str, default='./saved_model_helmet')
+    parser.add_argument('--img_path', type=str, default='./images/helmet.jpg')
     args = parser.parse_args()
 
     return args
@@ -103,4 +103,4 @@ if __name__ == '__main__':
     image_show = visualzation(model_path=arguments.model_path,
                               img_path=arguments.img_path)
     image_show.show()
-    image_show.save('./images/result2.jpg')
+    image_show.save('./images/result3.jpg')
