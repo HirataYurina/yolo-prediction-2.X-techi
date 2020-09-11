@@ -154,7 +154,7 @@ if __name__ == '__main__':
     yolo = yolo_body(keras.Input(shape=(416, 416, 3)), 3, 80)
     yolo.summary()
 
-    # yolo.load_weights('../logs/yolo4_weight.h5')
+    # yolo.load_weights('../logs/yolo4_weight_coco.h5')
     #
     # for layer in yolo.layers[-3:]:
     #     print(layer.name)

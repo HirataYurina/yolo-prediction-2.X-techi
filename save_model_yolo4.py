@@ -80,8 +80,8 @@ anchor_wh.append(anchors_wh_52)
 
 inputs_keras = keras.Input(shape=(416, 416, 3))
 yolo4 = yolo_body(inputs=inputs_keras,
-                  num_anchors=3,
-                  num_classes=6)
+                  num_anchors=num_anchors,
+                  num_classes=num_classes)
 
 yolo4.load_weights(weight_path)
 

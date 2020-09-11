@@ -63,6 +63,8 @@ optional arguments:
 
 <img src="images/result2.jpg" align="center" width="500px">
 
+<img src="images/result3.jpg" width="400px">
+
 **4. why i use saved_model format?**
 
 Because saved_model format is a bridge in tensorflow ecology.
