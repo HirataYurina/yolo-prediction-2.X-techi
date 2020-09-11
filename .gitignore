@@ -2,5 +2,4 @@ data/
 .idea/
 saved_model/
 saved_model_helmet/
-images/
 saved_model_coco
