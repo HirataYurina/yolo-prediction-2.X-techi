@@ -14,8 +14,8 @@ from argparse import ArgumentParser
 
 def augument_parser():
     parser = ArgumentParser(description='visualize your results to validate your saved_model')
-    parser.add_argument('--classes_path', type=str, default='./data/helmet.txt')
-    parser.add_argument('--model_path', type=str, default='./saved_model_helmet')
+    parser.add_argument('--classes_path', type=str, default='./data/danger_source_classes.txt')
+    parser.add_argument('--model_path', type=str, default='./saved_model')
     parser.add_argument('--img_path', type=str, default='./images/helmet.jpg')
     args = parser.parse_args()
 
@@ -34,7 +34,8 @@ def visualzation(model_path, img_path):
     model = tf.saved_model.load(model_path)
     perdictor = model.signatures['serving_default']
     image = Image.open(img_path)
-    image_shape = np.array([image.size[1], image.size[0]], dtype='float32')
+    # (batch, 2)
+    image_shape = np.expand_dims(np.array([image.size[1], image.size[0]], dtype='float32'), axis=0)
 
     # letter box
     image_letter = letterbox_image(image, (416, 416))
