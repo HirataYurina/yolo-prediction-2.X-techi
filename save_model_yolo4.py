@@ -24,7 +24,7 @@ def arg():
                         help='image that you want to predict')
     parser.add_argument('--weight_path', type=str, default='./data/ep290-loss16.428.h5',
                         help='the path of model weights')
-    parser.add_argument('--save_path', type=str, default='./saved_model')
+    parser.add_argument('--save_path', type=str, default='./saved_model_danger')
     args = parser.parse_args()
 
     return args
@@ -101,8 +101,8 @@ def save_model(inputs,
     # You don't need to do postprocessing by yourself.
 
     Args:
-        inputs:      should be fed into the model [keras.Input]
-        image_shape: should be fed into the model [keras.Input]
+        inputs:      should be fed into the model [keras.Input] (batch, 416, 416, 3)
+        image_shape: should be fed into the model [keras.Input] (batch, 2)
         input_shape: constant
         num_anchors: constant
         num_classes: constant
@@ -116,8 +116,13 @@ def save_model(inputs,
         scales_xy = [1.05, 1.1, 1.2]
     scales_xy = tf.constant(scales_xy, dtype=tf.float32)
 
-    input_hw = tf.cast(input_shape[0:2], dtype=tf.float32)
-    img_hw = tf.cast(image_shape[0:2], dtype=tf.float32)
+    batch = tf.shape(inputs)[0]
+    input_shape = tf.tile(tf.expand_dims(input_shape, axis=0), [batch, 1])
+
+    input_hw = tf.cast(input_shape[:, 0:2], dtype=tf.float32)
+    img_hw = tf.cast(image_shape[:, 0:2], dtype=tf.float32)
+    input_hw = tf.reshape(input_hw, shape=(-1, 1, 1, 1, 2))
+    img_hw = tf.reshape(img_hw, shape=(-1, 1, 1, 1, 2))
     boxes = []
     scores = []
 
@@ -146,13 +151,13 @@ def save_model(inputs,
 
         # 1.decode
         pred_xy = ((scales_xy[i] * tf.sigmoid(raw_xy) - 0.5 * (scales_xy[i] - 1)
-                    + anchor_xy[i]) / shape_float[::-1]) * input_hw[::-1]
+                    + anchor_xy[i]) / shape_float[::-1]) * input_hw[..., ::-1]
         pred_wh = (tf.exp(raw_wh) * anchor_wh[i])
 
         # 2.correct boxes
         scale = tf.reduce_min(input_hw / img_hw)  # tf.float32
         dhw = (input_hw - scale * img_hw) / tf.constant(2.0, dtype=tf.float32)
-        correct_yx = ((pred_xy - dhw[::-1]) / scale)[..., ::-1]
+        correct_yx = ((pred_xy - dhw[..., ::-1]) / scale)[..., ::-1]
         correct_hw = (pred_wh / scale)[..., ::-1]
 
         # 3.in order to use tf.image.non_max_suppression, the boxes need to be [num_boxes, (y1, x1, y2, x2)]
@@ -202,7 +207,7 @@ def save_model(inputs,
 if __name__ == '__main__':
 
     inputs_ = keras.Input(shape=(416, 416, 3))
-    img_shape = keras.Input(shape=())
+    img_shape = keras.Input(shape=(2,))
     model = save_model(inputs_,
                        img_shape,
                        (416, 416, 3),
@@ -214,7 +219,7 @@ if __name__ == '__main__':
     # test model
     # and through testing, the decoding codes are usable.
     image = Image.open(img_path)
-    image_shape = np.array([image.size[1], image.size[0]], dtype='float32')
+    image_shape = np.expand_dims(np.array([image.size[1], image.size[0]], dtype='float32'), axis=0)
     image = letterbox_image(image, (416, 416))
     image_array = np.expand_dims(np.array(image, dtype='float32') / 255.0, axis=0)
     boxes, scores, classes = model([image_array, image_shape])
