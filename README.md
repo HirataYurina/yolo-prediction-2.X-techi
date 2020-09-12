@@ -12,10 +12,12 @@ ___
 
 **1. Save Model**
 
+**The inputs are designed to be the shape of (batch, 416, 416, 3) and (batch, 2) which is the image shape used to correct boxes.**
+
 ```shell
 # save your model that contains postprocessing
 # you can directly get boxes, scores and classes by inferrring
-python save_model.py -h
+python save_model_yolo4.py -h
 ```
 
 ```shell
