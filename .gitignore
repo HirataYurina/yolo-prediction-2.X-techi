@@ -4,3 +4,5 @@ saved_model/
 saved_model_helmet/
 saved_model_coco/
 saved_model_danger/
+saved_model_helmet_FP16/
+saved_model_danger_FP16/
